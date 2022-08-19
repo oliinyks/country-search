@@ -2,6 +2,8 @@ import './css/styles.css';
 import NewsApiService from './js/fetchCountries';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
+import countyMarkup from './templates/country.hbs';
+import countriesMarkup from './templates/countries.hbs';
 
 const DEBOUNCE_DELAY = 300;
 const refs = {
@@ -14,65 +16,30 @@ const newsApiService = new NewsApiService();
 refs.searchForm.addEventListener('input', debounce(onSearch, DEBOUNCE_DELAY));
 
 function onSearch(e) {
-  clearCauntryContainer();
+  clearCountryContainer();
 
   newsApiService.query = e.target.value.trim();
-	newsApiService
-		.fetchCountries()
-		.then(appendCauntryMarkup);
+  newsApiService.fetchCountries().then(appendCountryMarkup);
 }
 
-function appendCauntryMarkup(cauntry) {
-  if (!cauntry) {
-    return Notiflix.Notify.failure('Oops, there is no country with that name');
-  }
-  if (cauntry.length >= 10) {
+function appendCountryMarkup(country) {
+  if (country.length > 10) {
     return Notiflix.Notify.info(
       'Too many matches found. Please enter a more specific name.'
     );
   }
-  if (cauntry.length < 10 || cauntry.length > 1) {
-    refs.countryList.insertAdjacentHTML('beforeend', allCauntryEl(cauntry));
+  if (country.length <= 10 || country.length > 1) {
+    const markupAllCountry = countriesMarkup(country);
+    refs.countryList.insertAdjacentHTML('beforeend', markupAllCountry);
   }
-  if (cauntry.length === 1) {
-    clearCauntryContainer();
-    refs.countryInfo.insertAdjacentHTML('beforeend', oneCauntryEl(cauntry));
+  if (country.length === 1) {
+    clearCountryContainer();
+    const markupOneCountry = countyMarkup(country);
+    refs.countryInfo.insertAdjacentHTML('beforeend', markupOneCountry);
   }
 }
 
-function oneCauntryEl(cauntry) {
-  return cauntry
-    .map(
-      ({
-        flags,
-        name,
-        capital,
-        languages,
-        population,
-      }) => `<ul class="one-cauntry">
-		<li class="one-cauntry__item">
-		<img src="${flags.svg}" alt="flag of ${
-        name.official
-      }" width="60" height="40"></li>
-		<li class="one-cauntry__item">${name.official}</li>
-		<li class="one-cauntry__item">${capital}</li>
-		<li class="one-cauntry__item">${Object.values(languages)}</li>
-	<li class="one-cauntry__item">${population}</li>
-	</ul>`
-    )
-    .join('');
-}
-
-function allCauntryEl(cauntry) {
-  return cauntry
-    .map(
-      ({ flags, name }) =>
-        `<li class="country__item"><img src="${flags.svg}" alt="flag of ${name.official}" width="60" height="40"><p class="country__name">${name.official}</p></li></li>`
-    )
-    .join('');
-}
-
-function clearCauntryContainer() {
-	refs.countryInfo.innerHTML = '';
-	refs.countryList.innerHTML = '';
+function clearCountryContainer() {
+  refs.countryInfo.innerHTML = '';
+  refs.countryList.innerHTML = '';
 }

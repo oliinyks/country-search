@@ -27,7 +27,7 @@ padding: 10px;
 }
 
 .country-list,
-.one-cauntry {
+.one-country {
   padding: 0;
 }
 .country__item {
@@ -38,9 +38,9 @@ padding: 10px;
 .country__name {
   margin-left: 15px;
 }
-.one-cauntry__item {
+.one-country__item {
   list-style: none;
 }
-.one-cauntry__item + .one-cauntry__item {
+.one-country__item + .one-country__item {
   margin-bottom: 10px;
 }
