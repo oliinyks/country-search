@@ -11,7 +11,7 @@
       /></li>
     <li class='one-country__item'>{{name.official}}</li>
     <li class='one-country__item'>{{capital}}</li>
-    {{!-- <li class="one-country__item">{{Object.values(languages)}}</li> --}}
+  <li class="one-country__item">{{Object.values().join(',')}}</li>
     <li class='one-country__item'>{{population}}</li>
   </ul>
 {{/each}}
